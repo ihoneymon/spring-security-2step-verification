@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    initialize: true # data.sql 을 이용한 DB 초기화 작업
+  mail:
+    default-encoding: UTF-8
+    username: #${username}
+    password: #${password}
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    properties:
+      mail.smtp.starttls.enable: true
+      mail.smtp.auth: true
+  h2: # jdbc ur: jdbc:h2:mem:testdb
+    console: # http://localhost:8080/h2-console
+      enabled: true

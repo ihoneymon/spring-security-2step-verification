@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Honeymon TOTP Registration Mail</title>
+</head>
+<body>
+    <div>
+        <div>
+            <h1>Honeymon TOTP Registration</h1>
+        </div>
+        <div>
+            <img src="" th:src="${qrCodeUrl}"/>
+        </div>
+        <div>
+            <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">
+                <img src="https://lh3.googleusercontent.com/jMwpM8BSQQpiTdscA6w2fTQpHlE7BdJKC1JoC4NBrlt542Vb3u1r_y1XJG4L9-9er1I=h310-rw"/><br/>
+                <h3>Google Authenticator</h3>
+            </a>
+        </div>
+        <div>OTP 등록을 마치면 메일을 삭제하기 바랍니다. OTP 를 재등록해야하는 경우 관리자에게 OTP 인증메일 재발송을 요청하세요.</div>
+    </div>
+</body>
+</html>
