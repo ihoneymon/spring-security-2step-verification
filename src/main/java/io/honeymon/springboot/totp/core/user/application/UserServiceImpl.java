@@ -1,4 +1,4 @@
-package io.honeymon.springboot.totp.service;
+package io.honeymon.springboot.totp.core.user.application;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,10 +14,10 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 import com.warrenstrange.googleauth.IGoogleAuthenticator;
 
-import io.honeymon.springboot.totp.domain.User;
-import io.honeymon.springboot.totp.infra.mail.MailMessage;
-import io.honeymon.springboot.totp.infra.mail.MailService;
-import io.honeymon.springboot.totp.repository.UserRepository;
+import io.honeymon.springboot.totp.core.user.domain.User;
+import io.honeymon.springboot.totp.common.mail.MailMessage;
+import io.honeymon.springboot.totp.common.mail.MailService;
+import io.honeymon.springboot.totp.core.user.domain.UserRepository;
 import lombok.Setter;
 
 @Service
@@ -25,30 +25,33 @@ public class UserServiceImpl implements UserService {
 
 	private static final String ISSUER = "honeymon";
 
-	@Setter
-	@Autowired
-	UserRepository repository;
-	
-	@Setter
-	@Autowired
-	PasswordEncoder passwordEncoder;
-	
-	@Setter
-	@Autowired
-	IGoogleAuthenticator googleAuthenticator;
-	
-	@Setter
-	@Autowired
-	MailService mailService;
-	
+	private final UserRepository repository;
+	private final PasswordEncoder passwordEncoder;
+	private final IGoogleAuthenticator googleAuthenticator;
+	private final MailService mailService;
+
+	public UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder, IGoogleAuthenticator googleAuthenticator, MailService mailService) {
+		this.repository = repository;
+		this.passwordEncoder = passwordEncoder;
+		this.googleAuthenticator = googleAuthenticator;
+		this.mailService = mailService;
+	}
+
 	@Override
-	public User insert(User user) {
+	public User register(String username, String password) {
 		GoogleAuthenticatorKey key = googleAuthenticator.createCredentials();
+		String encPassword = passwordEncoder.encode(password);
+
+		User user = User.builder().username(username).password(encPassword).build();
 		sendTOTPRegistrationMail(user, key);
-		user.setOtpSecretKey(key.getKey());
+		user.changeOtpSecretKey(key.getKey());
 		
-		encodePassword(user);
 		return repository.save(user);
+	}
+
+	@Override
+	public void delete(User user) {
+		repository.delete(user);
 	}
 
 	private void sendTOTPRegistrationMail(User user, GoogleAuthenticatorKey key) {
@@ -63,23 +66,6 @@ public class UserServiceImpl implements UserService {
 				.attributes(attributes)
 				.build();
 		mailService.send(mailMessage);
-	}
-
-	private void encodePassword(User user) {
-		if(StringUtils.hasText(user.getPlainPassword())) {
-			user.setPassword(passwordEncoder.encode(user.getPlainPassword()));
-		}
-	}
-
-	@Override
-	public User update(User user) {
-		encodePassword(user);
-		return repository.save(user);
-	}
-
-	@Override
-	public void delete(User user) {
-		repository.delete(user);
 	}
 
 	@Override

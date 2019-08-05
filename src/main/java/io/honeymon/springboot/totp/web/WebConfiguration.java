@@ -1,4 +1,4 @@
-package io.honeymon.springboot.totp.config;
+package io.honeymon.springboot.totp.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;

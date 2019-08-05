@@ -1,4 +1,4 @@
-package io.honeymon.springboot.totp.infra.mail;
+package io.honeymon.springboot.totp.common.mail;
 
 import java.io.File;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -15,25 +14,21 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.context.IContext;
-import org.thymeleaf.spring4.SpringTemplateEngine;
 
-import lombok.Setter;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 @Component
 @EnableConfigurationProperties(MailProperties.class)
 public class MailServiceImpl implements MailService {
+	private final MailProperties mailProperties;
+	private final JavaMailSender javaMailSender;
+	private final SpringTemplateEngine emailTemplateEngine;
 
-	@Autowired
-	MailProperties mailProperties;
-	
-	@Setter
-	@Autowired
-	JavaMailSender javaMailSender;
-	
-	@Setter
-	@Autowired
-	SpringTemplateEngine emailTemplateEngine;
-	
+	public MailServiceImpl(MailProperties mailProperties, JavaMailSender javaMailSender, SpringTemplateEngine emailTemplateEngine) {
+		this.mailProperties = mailProperties;
+		this.javaMailSender = javaMailSender;
+		this.emailTemplateEngine = emailTemplateEngine;
+	}
 
 	@Override
 	public void send(MailMessage mailMessage) {

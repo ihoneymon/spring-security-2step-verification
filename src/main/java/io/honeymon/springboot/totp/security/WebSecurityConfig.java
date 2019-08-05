@@ -1,5 +1,6 @@
-package io.honeymon.springboot.totp.config;
+package io.honeymon.springboot.totp.security;
 
+import io.honeymon.springboot.totp.core.user.application.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -28,8 +29,6 @@ import io.honeymon.springboot.totp.security.TOTPWebAuthenticationDetailsSource;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static final String JSESSIONID = "JSESSIONID";
-    @Autowired
-    UserDetailsService userDetailsService;
 
 	@Bean
 	PasswordEncoder passwordEncoder() {
@@ -67,16 +66,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .authenticationProvider(authenticationProvider())
                 .inMemoryAuthentication()
                 .withUser("user").password("user").roles("USER");
     }
 	
 	@Bean
-    AuthenticationProvider authenticationProvider() {
+    AuthenticationProvider authenticationProvider(UserService userService) {
         ExtensibleUserDetailsAuthenticationProvider authenticationProvider = new ExtensibleUserDetailsAuthenticationProvider();
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-        authenticationProvider.setUserDetailsService(this.userDetailsService);
+        authenticationProvider.setUserDetailsService(userService);
         authenticationProvider.setAuthenticator(googleAuthenticator());
         return authenticationProvider;
     }

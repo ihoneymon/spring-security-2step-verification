@@ -1,6 +1,6 @@
 spring:
   datasource:
-    initialize: true # data.sql 을 이용한 DB 초기화 작업
+    initialization-mode: embedded
   mail:
     default-encoding: UTF-8
     username: #${username}

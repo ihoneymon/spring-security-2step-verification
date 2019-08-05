@@ -1,4 +1,4 @@
-package io.honeymon.springboot.totp.infra.mail;
+package io.honeymon.springboot.totp.common.mail;
 
 import java.util.List;
 

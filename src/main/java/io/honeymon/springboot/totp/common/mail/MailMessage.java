@@ -1,4 +1,4 @@
-package io.honeymon.springboot.totp.infra.mail;
+package io.honeymon.springboot.totp.common.mail;
 
 import java.io.File;
 import java.util.Date;
@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Data
 @AllArgsConstructor
@@ -45,7 +47,7 @@ public class MailMessage {
 	private Map<String, Object> attributes;
 
 	public boolean isMultipart() {
-		return CollectionUtils.isEmpty(this.attachments);
+		return isEmpty(this.attachments);
 	}
 
 	public boolean hasTemplateName() {
